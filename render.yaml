@@ -1,0 +1,68 @@
+services:
+  - type: web
+    name: universe-api
+    env: docker
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /api/bootstrap
+    envVars:
+      - key: APP_NAME
+        value: Universe
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        sync: false
+      - key: APP_KEY
+        sync: false
+      - key: LOG_CHANNEL
+        value: stack
+      - key: LOG_LEVEL
+        value: warning
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: universe-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: universe-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: universe-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: universe-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: universe-db
+          property: password
+      - key: CACHE_DRIVER
+        value: file
+      - key: SESSION_DRIVER
+        value: file
+      - key: SESSION_LIFETIME
+        value: "120"
+      - key: FILESYSTEM_DISK
+        value: public
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: FRONTEND_URL
+        sync: false
+      - key: UNIVERSE_ADMIN_NAME
+        value: Philip Kazah
+      - key: UNIVERSE_ADMIN_EMAIL
+        value: Archii101@universe.app
+      - key: UNIVERSE_ADMIN_PASSWORD
+        value: Universe#Archii4life
+
+databases:
+  - name: universe-db
+    plan: free
+    databaseName: universe_app
+    user: universe_user
