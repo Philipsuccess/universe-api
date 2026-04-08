@@ -334,6 +334,11 @@ function notifyUser(int $userId, string $title, string $message, string $tone = 
     ]);
 }
 
+Route::get('/health', fn () => response()->json([
+    'ok' => true,
+    'status' => 'healthy',
+]));
+
 Route::get('/bootstrap', function () {
     return response()->json([
         'ok' => true,

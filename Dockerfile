@@ -32,8 +32,9 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction \
     && php artisan config:clear \
     && php artisan route:clear \
     && php artisan view:clear \
+    && chmod +x docker/start.sh \
     && chown -R www-data:www-data storage bootstrap/cache
 
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+CMD ["./docker/start.sh"]
