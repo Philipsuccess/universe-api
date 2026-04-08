@@ -32,21 +32,30 @@ class UniverseAdminSeeder extends Seeder
         ];
 
         foreach ($admins as $admin) {
-            User::updateOrCreate(
-                ['email' => $admin['email']],
-                [
-                    'name' => $admin['name'],
-                    'matric_no' => $admin['matric_no'],
-                    'referral_code' => $admin['referral_code'],
-                    'faculty' => 'Administration',
-                    'department' => $admin['department'],
-                    'course' => 'Universe Control',
-                    'bio' => $admin['bio'],
-                    'verified' => true,
-                    'role' => 'admin',
-                    'password' => Hash::make($admin['password']),
-                ]
-            );
+            $user = User::where('email', $admin['email'])
+                ->orWhere('matric_no', $admin['matric_no'])
+                ->orWhere('referral_code', $admin['referral_code'])
+                ->first();
+
+            if (! $user) {
+                $user = new User();
+            }
+
+            $user->fill([
+                'name' => $admin['name'],
+                'email' => $admin['email'],
+                'matric_no' => $admin['matric_no'],
+                'referral_code' => $admin['referral_code'],
+                'faculty' => 'Administration',
+                'department' => $admin['department'],
+                'course' => 'Universe Control',
+                'bio' => $admin['bio'],
+                'verified' => true,
+                'role' => 'admin',
+                'password' => Hash::make($admin['password']),
+            ]);
+
+            $user->save();
         }
     }
 }
