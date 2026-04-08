@@ -108,25 +108,21 @@ return [
         ['name' => 'Mira Bello', 'xp' => 12010],
     ],
     'walletSummary' => [
-        'balance' => '24,680 Coins',
-        'rewards' => '8 redeemed this month',
-        'gifts' => '17 gifts sent',
+        'balance' => '0 Coins',
+        'rewards' => '0 redeemed',
+        'gifts' => '0 gifts sent',
     ],
-    'transactions' => [
-        ['label' => 'Daily challenge streak', 'amount' => '+450', 'type' => 'Credit'],
-        ['label' => 'Live class replay access', 'amount' => '-1200', 'type' => 'Debit'],
-        ['label' => 'Creator tip earnings', 'amount' => '+600', 'type' => 'Credit'],
-    ],
+    'transactions' => [],
     'paymentMethods' => [
         ['id' => 'bank', 'label' => 'Bank Transfer', 'note' => 'Great for manual settlement confirmation.'],
         ['id' => 'paystack', 'label' => 'Paystack', 'note' => 'Ready for future hosted checkout integration.'],
         ['id' => 'card', 'label' => 'Card', 'note' => 'Reserved for direct processor handoff by backend.'],
     ],
     'paymentAccountDetails' => [
-        'accountNumber' => '2076983702',
-        'bankName' => 'Kuda',
-        'accountName' => 'Universe Trial Account',
-        'note' => 'Trial account for frontend and backend payment flow testing.',
+        'accountNumber' => 'No live account',
+        'bankName' => 'Unavailable',
+        'accountName' => '',
+        'note' => 'Wallet details will appear when real wallet and payment services are activated.',
     ],
     'jobs' => [
         ['id' => 'frontend-intern', 'title' => 'Frontend Engineering Intern', 'type' => 'Hybrid · Lagos · 3 months', 'summary' => 'Work on student-facing product features with a fast-moving product team.'],
