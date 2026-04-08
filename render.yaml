@@ -60,6 +60,12 @@ services:
         value: Archii101@universe.app
       - key: UNIVERSE_ADMIN_PASSWORD
         value: Universe#Archii4life
+      - key: UNIVERSE_ADMIN_TWO_NAME
+        value: Stephen Dev
+      - key: UNIVERSE_ADMIN_TWO_EMAIL
+        value: StephenDev@universe.app
+      - key: UNIVERSE_ADMIN_TWO_PASSWORD
+        value: Universe#dev4life
 
 databases:
   - name: universe-db
