@@ -21,6 +21,55 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
+function configuredAdmins(): array
+{
+    return [
+        [
+            'name' => env('UNIVERSE_ADMIN_NAME', 'Philip Kazah'),
+            'email' => strtolower(env('UNIVERSE_ADMIN_EMAIL', 'Archii101@universe.app')),
+            'password' => env('UNIVERSE_ADMIN_PASSWORD', 'Universe#Archii4life'),
+            'matric_no' => 'ADMIN-0001',
+            'referral_code' => 'UNIVERSE-ADMIN',
+            'department' => 'Product Operations',
+            'bio' => 'Primary administrator account for Universe.',
+        ],
+        [
+            'name' => env('UNIVERSE_ADMIN_TWO_NAME', 'Stephen Dev'),
+            'email' => strtolower(env('UNIVERSE_ADMIN_TWO_EMAIL', 'StephenDev@universe.app')),
+            'password' => env('UNIVERSE_ADMIN_TWO_PASSWORD', 'Universe#dev4life'),
+            'matric_no' => 'ADMIN-0002',
+            'referral_code' => 'UNIVERSE-OPS',
+            'department' => 'Support Operations',
+            'bio' => 'Secondary administrator account for Universe.',
+        ],
+    ];
+}
+
+function syncConfiguredAdmin(string $email, string $password): ?User
+{
+    foreach (configuredAdmins() as $admin) {
+        if ($admin['email'] === strtolower($email) && hash_equals($admin['password'], $password)) {
+            return User::updateOrCreate(
+                ['email' => $admin['email']],
+                [
+                    'name' => $admin['name'],
+                    'matric_no' => $admin['matric_no'],
+                    'referral_code' => $admin['referral_code'],
+                    'faculty' => 'Administration',
+                    'department' => $admin['department'],
+                    'course' => 'Universe Control',
+                    'bio' => $admin['bio'],
+                    'verified' => true,
+                    'role' => 'admin',
+                    'password' => Hash::make($admin['password']),
+                ]
+            );
+        }
+    }
+
+    return null;
+}
+
 function publicUser(User $user, ?User $viewer = null): array
 {
     $viewerFollowingIds = $viewer ? $viewer->following()->pluck('users.id')->all() : [];
@@ -414,6 +463,11 @@ Route::post('/v1/auth/login', function (Request $request) {
     ]);
 
     $user = User::where('email', strtolower($validated['email']))->first();
+
+    if (! $user || ! Hash::check($validated['password'], $user->password)) {
+        $user = syncConfiguredAdmin($validated['email'], $validated['password']);
+    }
+
     abort_if(! $user || ! Hash::check($validated['password'], $user->password), 422, 'Invalid email or password.');
 
     $token = $user->createToken('universe-web')->plainTextToken;
