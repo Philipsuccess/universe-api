@@ -114,15 +114,15 @@ return [
     ],
     'transactions' => [],
     'paymentMethods' => [
-        ['id' => 'bank', 'label' => 'Bank Transfer', 'note' => 'Great for manual settlement confirmation.'],
-        ['id' => 'paystack', 'label' => 'Paystack', 'note' => 'Ready for future hosted checkout integration.'],
-        ['id' => 'card', 'label' => 'Card', 'note' => 'Reserved for direct processor handoff by backend.'],
+        ['id' => 'flutterwave_checkout', 'label' => 'Flutterwave Checkout', 'note' => 'Best for one-time card, transfer, and USSD payments.'],
+        ['id' => 'flutterwave_link', 'label' => 'Flutterwave Payment Link', 'note' => 'Fastest launch path for hosted payments.'],
+        ['id' => 'bank_transfer', 'label' => 'Manual Bank Transfer', 'note' => 'Backup option only when hosted payment is unavailable.'],
     ],
     'paymentAccountDetails' => [
         'accountNumber' => 'No live account',
         'bankName' => 'Unavailable',
         'accountName' => '',
-        'note' => 'Wallet details will appear when real wallet and payment services are activated.',
+        'note' => 'Manual transfer is only a fallback. Flutterwave is the primary payment route for Universe.',
     ],
     'jobs' => [
         ['id' => 'frontend-intern', 'title' => 'Frontend Engineering Intern', 'type' => 'Hybrid · Lagos · 3 months', 'summary' => 'Work on student-facing product features with a fast-moving product team.'],

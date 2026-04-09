@@ -31,4 +31,12 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'flutterwave' => [
+        'public_key' => env('FLW_PUBLIC_KEY'),
+        'secret_key' => env('FLW_SECRET_KEY'),
+        'secret_hash' => env('FLW_SECRET_HASH'),
+        'payment_link' => env('FLW_PAYMENT_LINK'),
+        'webhook_url' => env('FLW_WEBHOOK_URL'),
+    ],
+
 ];

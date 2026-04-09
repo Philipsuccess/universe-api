@@ -18,6 +18,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
@@ -398,6 +399,25 @@ Route::get('/health', fn () => response()->json([
     'ok' => true,
     'status' => 'healthy',
 ]));
+
+Route::post('/v1/payments/flutterwave/webhook', function (Request $request) {
+    $expectedHash = (string) config('services.flutterwave.secret_hash');
+    $incomingHash = (string) $request->header('verif-hash', '');
+
+    if ($expectedHash !== '' && ! hash_equals($expectedHash, $incomingHash)) {
+        abort(403, 'Invalid Flutterwave webhook hash.');
+    }
+
+    Log::info('Flutterwave webhook received', [
+        'event' => $request->input('event'),
+        'data' => $request->input('data'),
+    ]);
+
+    return response()->json([
+        'ok' => true,
+        'message' => 'Flutterwave webhook received.',
+    ]);
+});
 
 Route::get('/bootstrap', function () {
     return response()->json([
@@ -1225,6 +1245,59 @@ Route::get('/v1/wallet', function () {
             'transactions' => config('universe.transactions'),
             'paymentMethods' => config('universe.paymentMethods'),
             'paymentAccountDetails' => config('universe.paymentAccountDetails'),
+            'flutterwave' => [
+                'provider' => 'Flutterwave',
+                'checkoutEnabled' => (bool) config('services.flutterwave.public_key'),
+                'paymentLinkEnabled' => (bool) config('services.flutterwave.payment_link'),
+                'paymentLink' => config('services.flutterwave.payment_link'),
+                'webhookUrl' => config('services.flutterwave.webhook_url'),
+                'manualTransferBackup' => true,
+            ],
+        ],
+    ]);
+});
+
+Route::get('/v1/payments/config', function () {
+    return response()->json([
+        'ok' => true,
+        'data' => [
+            'provider' => 'Flutterwave',
+            'publicKey' => config('services.flutterwave.public_key'),
+            'paymentLink' => config('services.flutterwave.payment_link'),
+            'checkoutEnabled' => (bool) config('services.flutterwave.public_key'),
+            'paymentLinkEnabled' => (bool) config('services.flutterwave.payment_link'),
+            'manualTransferBackup' => true,
+        ],
+    ]);
+});
+
+Route::post('/v1/payments/flutterwave/checkout', function (Request $request) {
+    $user = requireAuth($request);
+    $validated = $request->validate([
+        'amount' => ['required', 'numeric', 'min:1'],
+        'title' => ['required', 'string', 'min:2'],
+        'redirectUrl' => ['nullable', 'url'],
+    ]);
+
+    $paymentLink = (string) config('services.flutterwave.payment_link');
+    $txRef = 'uni-tx-' . Str::lower(Str::random(12));
+
+    return response()->json([
+        'ok' => true,
+        'message' => 'Flutterwave checkout initialized.',
+        'data' => [
+            'provider' => 'Flutterwave',
+            'txRef' => $txRef,
+            'amount' => (float) $validated['amount'],
+            'currency' => 'NGN',
+            'customer' => [
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+            'title' => $validated['title'],
+            'paymentLink' => $paymentLink !== '' ? $paymentLink : null,
+            'redirectUrl' => $validated['redirectUrl'] ?? config('app.url'),
+            'manualTransferBackup' => config('universe.paymentAccountDetails'),
         ],
     ]);
 });
