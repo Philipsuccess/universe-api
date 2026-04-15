@@ -54,10 +54,7 @@ php artisan db:seed --class=UniverseAdminSeeder
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-## Admin login
 
-- Email: `Archii101@universe.app`
-- Password: `Universe#Archii4life`
 
 ## Render deployment
 
